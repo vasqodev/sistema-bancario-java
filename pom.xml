@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cl.rvasquez.banco</groupId>
+    <artifactId>sistema-bancario-java</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>sistema-bancario-java</name>
+    <description>Aplicación de escritorio que simula la gestión de clientes,
+        cuentas y transferencias bancarias. Proyecto de portafolio basado en
+        las asignaturas de Java de Duoc UC.</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+
+        <postgresql.version>42.7.4</postgresql.version>
+        <junit.version>5.11.3</junit.version>
+
+        <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
+        <maven.surefire.plugin.version>3.5.2</maven.surefire.plugin.version>
+        <exec.maven.plugin.version>3.5.0</exec.maven.plugin.version>
+
+        <!-- Clase main por defecto. Se puede sobreescribir desde la línea de
+             comando: mvn exec:java -Dexec.mainClass=cl.rvasquez.banco.DemoDAO -->
+        <exec.mainClass>cl.rvasquez.banco.Main</exec.mainClass>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.plugin.version}</version>
+                <configuration>
+                    <!-- Aislamiento de tests: forzamos que ConexionBD apunte a la BD
+                         `banco_test` (creada por sql/02-test-db.sql, sin datos semilla)
+                         para que ningún test toque la BD `banco` de la demo. Solo
+                         override de POSTGRES_DB; host/port/user/password los toma del
+                         mismo application.properties que usa la app real. -->
+                    <environmentVariables>
+                        <POSTGRES_DB>banco_test</POSTGRES_DB>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec.maven.plugin.version}</version>
+                <configuration>
+                    <mainClass>${exec.mainClass}</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

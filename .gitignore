@@ -1,0 +1,32 @@
+# Maven
+target/
+*.jar
+*.war
+dependency-reduced-pom.xml
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse / VS Code
+.settings/
+.classpath
+.project
+.vscode/
+
+# Compilados
+*.class
+
+# Logs
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Overrides locales (no commitear configuraciones específicas de cada máquina)
+.env
+src/main/resources/application-local.properties

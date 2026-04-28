@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: banco-postgres
+    environment:
+      # Defaults sensatos para desarrollo local. Para personalizar, copia
+      # .env.example a .env y edita los valores; Compose lo lee automáticamente.
+      POSTGRES_DB: ${POSTGRES_DB:-banco}
+      POSTGRES_USER: ${POSTGRES_USER:-banco}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-banco}
+    ports:
+      # Mapeamos al 15432 en el host (convención "1" + 5432) para saltar fuera
+      # del rango 543x, que en máquinas con varios Postgres locales suele estar saturado.
+      - "15432:5432"
+    volumes:
+      # Postgres ejecuta automáticamente los .sql de este directorio en el primer arranque
+      # del contenedor (es decir, mientras el volumen banco-data esté vacío).
+      - ./sql:/docker-entrypoint-initdb.d:ro
+      - banco-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-banco} -d ${POSTGRES_DB:-banco}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  banco-data:
